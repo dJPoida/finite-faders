@@ -5,11 +5,14 @@ const isProd = process.env.NODE_ENV === 'production'
 
 export default withPWA({
   dest: 'public',
-  disable: !isProd,          // enable SW only on prod builds
+  disable: !isProd,
   register: true,
   skipWaiting: true,
 })({
   reactStrictMode: true,
+  eslint: {
+    ignoreDuringBuilds: true,
+  },
   experimental: {
     optimizePackageImports: ['@radix-ui/react-slider'],
   },

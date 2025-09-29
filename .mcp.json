@@ -1,0 +1,9 @@
+{
+    "mcpServers": {
+      "playwright": {
+        "command": "mcp-server-playwright",
+        "args": ["--isolated"]
+      }
+    }
+  }
+  

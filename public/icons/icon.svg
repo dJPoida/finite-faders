@@ -1,0 +1,26 @@
+<svg width="512" height="512" viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg">
+  <rect width="512" height="512" fill="#0b0b0b"/>
+  <g fill="none" stroke="#ffffff" stroke-width="8">
+    <!-- Fader tracks -->
+    <rect x="80" y="100" width="16" height="300" rx="8" fill="#333333"/>
+    <rect x="160" y="100" width="16" height="300" rx="8" fill="#333333"/>
+    <rect x="240" y="100" width="16" height="300" rx="8" fill="#333333"/>
+    <rect x="320" y="100" width="16" height="300" rx="8" fill="#333333"/>
+
+    <!-- Fader handles at different positions -->
+    <circle cx="88" cy="180" r="12" fill="#3B82F6"/>
+    <circle cx="168" cy="220" r="12" fill="#3B82F6"/>
+    <circle cx="248" cy="160" r="12" fill="#3B82F6"/>
+    <circle cx="328" cy="280" r="12" fill="#3B82F6"/>
+
+    <!-- Title text -->
+    <text x="256" y="60" text-anchor="middle" fill="#ffffff" font-family="Arial, sans-serif" font-size="32" font-weight="bold">
+      Finite Faders
+    </text>
+
+    <!-- Subtitle -->
+    <text x="256" y="460" text-anchor="middle" fill="#888888" font-family="Arial, sans-serif" font-size="16">
+      Priorities that add up. Always.
+    </text>
+  </g>
+</svg>

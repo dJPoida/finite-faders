@@ -1,0 +1,104 @@
+"use client"
+
+import { useCallback } from "react"
+import * as Slider from "@radix-ui/react-slider"
+import { useSimpleStore } from "@/lib/simple-store"
+
+interface FaderProps {
+  index: number
+  label: string
+  value: number
+  locked: boolean
+  onToggleLock: () => void
+}
+
+export default function Fader({ index, label, value, locked, onToggleLock }: FaderProps) {
+  const { setValue } = useSimpleStore()
+
+  const handleValueChange = useCallback(
+    (newValues: number[]) => {
+      setValue(index, newValues[0])
+    },
+    [index, setValue]
+  )
+
+  const handleKeyDown = useCallback(
+    (event: React.KeyboardEvent) => {
+      switch (event.key) {
+        case "ArrowUp":
+          event.preventDefault()
+          setValue(index, value + 1)
+          break
+        case "ArrowDown":
+          event.preventDefault()
+          setValue(index, value - 1)
+          break
+        case "PageUp":
+          event.preventDefault()
+          setValue(index, value + 10)
+          break
+        case "PageDown":
+          event.preventDefault()
+          setValue(index, value - 10)
+          break
+        case "Home":
+          event.preventDefault()
+          setValue(index, 0)
+          break
+        case "End":
+          event.preventDefault()
+          setValue(index, 100)
+          break
+      }
+    },
+    [index, setValue, value]
+  )
+
+  return (
+    <div className="flex flex-col items-center gap-3 p-3 bg-white dark:bg-gray-900 rounded-lg border border-gray-200 dark:border-gray-700 min-w-[80px]">
+      <span className="text-xs font-medium text-gray-700 dark:text-gray-300 text-center w-full truncate">
+        {label}
+      </span>
+
+      <div className="relative h-48 w-6 flex justify-center">
+        <Slider.Root
+          className="relative h-full w-full flex items-center justify-center"
+          orientation="vertical"
+          value={[value]}
+          onValueChange={handleValueChange}
+          min={0}
+          max={100}
+          step={1}
+          aria-label={`${label} fader`}
+        >
+          <Slider.Track className="relative bg-gray-200 dark:bg-gray-700 h-full w-2 rounded-full">
+            <Slider.Range className="absolute bg-blue-500 w-full rounded-full" />
+          </Slider.Track>
+          <Slider.Thumb
+            className="block w-5 h-5 bg-white dark:bg-gray-800 border-2 border-blue-500 rounded-full shadow-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 cursor-grab active:cursor-grabbing"
+            onKeyDown={handleKeyDown}
+            aria-label={`${label} value: ${value}`}
+          />
+        </Slider.Root>
+      </div>
+
+      <div className="flex items-center gap-2 w-full justify-center">
+        <button
+          onClick={onToggleLock}
+          className={`w-5 h-5 rounded border flex items-center justify-center text-xs transition-colors ${
+            locked
+              ? "bg-red-500 border-red-500 text-white"
+              : "bg-transparent border-gray-300 dark:border-gray-600 text-gray-600 dark:text-gray-400 hover:border-gray-400"
+          }`}
+          title={locked ? "Unlock fader" : "Lock fader"}
+          aria-label={locked ? "Unlock fader" : "Lock fader"}
+        >
+          {locked ? "🔒" : "⚬"}
+        </button>
+        <div className="bg-gray-800 dark:bg-gray-200 text-white dark:text-gray-800 px-1 py-0.5 rounded text-xs font-mono min-w-[2rem] text-center">
+          {value}
+        </div>
+      </div>
+    </div>
+  )
+}
