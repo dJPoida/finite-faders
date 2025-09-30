@@ -2,6 +2,7 @@
 
 import { useCallback } from "react"
 import * as Slider from "@radix-ui/react-slider"
+import { Lock } from "lucide-react"
 import { useSimpleStore } from "@/lib/simple-store"
 
 interface FaderProps {
@@ -84,20 +85,20 @@ export default function Fader({ index, label, value, locked, onToggleLock }: Fad
         </Slider.Root>
       </div>
 
-      <div className="flex items-center gap-1 sm:gap-2 w-full justify-center flex-shrink-0">
+      <div className="flex flex-col items-center gap-1 w-full justify-center flex-shrink-0">
         <button
           onClick={onToggleLock}
-          className={`w-4 h-4 sm:w-5 sm:h-5 rounded border flex items-center justify-center text-xs transition-colors ${
+          className={`p-2 rounded border flex items-center justify-center transition-colors ${
             locked
-              ? "bg-red-500 border-red-500 text-white"
-              : "bg-transparent border-gray-300 dark:border-gray-600 text-gray-600 dark:text-gray-400 hover:border-gray-400"
+              ? "bg-red-500 border-red-500 text-white hover:bg-red-600"
+              : "bg-white dark:bg-gray-800 border-gray-300 dark:border-gray-600 text-gray-600 dark:text-gray-400 hover:border-gray-400 dark:hover:border-gray-500"
           }`}
           title={locked ? "Unlock fader" : "Lock fader"}
           aria-label={locked ? "Unlock fader" : "Lock fader"}
         >
-          {locked ? "🔒" : "⚬"}
+          <Lock size={16} />
         </button>
-        <div className="bg-gray-800 dark:bg-gray-200 text-white dark:text-gray-800 px-1 py-0.5 rounded text-xs font-mono min-w-[1.5rem] sm:min-w-[2rem] text-center">
+        <div className="bg-gray-800 dark:bg-gray-200 text-white dark:text-gray-800 px-2 py-1 rounded text-xs font-mono min-w-[2rem] text-center">
           {value}
         </div>
       </div>
