@@ -1,8 +1,8 @@
 "use client"
 
-import { useState, useRef } from "react"
+import { useState, useRef, useEffect } from "react"
 import { useSimpleStore } from "@/lib/simple-store"
-import { Save, FolderOpen, RotateCcw, Share2 } from "lucide-react"
+import { Save, FolderOpen, RotateCcw, Share2, Menu, X } from "lucide-react"
 import html2canvas from "html2canvas"
 
 interface HeaderProps {
@@ -12,6 +12,7 @@ interface HeaderProps {
 export default function Header({ faderBankRef }: HeaderProps) {
   const { reset } = useSimpleStore()
   const [showSaveLoad, setShowSaveLoad] = useState(false)
+  const [menuOpen, setMenuOpen] = useState(false)
 
   const handleSave = () => {
     setShowSaveLoad(true)
@@ -76,6 +77,33 @@ export default function Header({ faderBankRef }: HeaderProps) {
     }
   }
 
+  // Close menu when clicking outside
+  useEffect(() => {
+    if (!menuOpen) return
+
+    const handleClickOutside = (e: MouseEvent) => {
+      const target = e.target as HTMLElement
+      if (!target.closest('.menu-container')) {
+        setMenuOpen(false)
+      }
+    }
+
+    // Delay adding the listener to avoid immediate closure
+    const timeoutId = setTimeout(() => {
+      document.addEventListener('click', handleClickOutside)
+    }, 0)
+
+    return () => {
+      clearTimeout(timeoutId)
+      document.removeEventListener('click', handleClickOutside)
+    }
+  }, [menuOpen])
+
+  const handleMenuAction = (action: () => void) => {
+    action()
+    setMenuOpen(false)
+  }
+
   return (
     <>
       <header className="w-full p-2 sm:p-3 border-b border-gray-200 dark:border-gray-800 flex-shrink-0">
@@ -84,42 +112,53 @@ export default function Header({ faderBankRef }: HeaderProps) {
             Finite Faders
           </h1>
 
-          <div className="flex items-center gap-1 sm:gap-2">
+          <div className="relative menu-container">
             <button
-              onClick={handleSave}
-              className="p-2 sm:px-3 sm:py-2 bg-green-500 text-white rounded-md hover:bg-green-600 transition-colors focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2 flex items-center gap-1"
-              title="Save current scenario"
+              onClick={() => setMenuOpen(!menuOpen)}
+              className="p-2 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700 rounded-md transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500"
+              title="Menu"
+              aria-label="Menu"
             >
-              <Save size={16} />
-              <span className="hidden md:inline">Save</span>
+              {menuOpen ? <X size={24} /> : <Menu size={24} />}
             </button>
 
-            <button
-              onClick={handleLoad}
-              className="p-2 sm:px-3 sm:py-2 bg-purple-500 text-white rounded-md hover:bg-purple-600 transition-colors focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2 flex items-center gap-1"
-              title="Load saved scenario"
-            >
-              <FolderOpen size={16} />
-              <span className="hidden md:inline">Load</span>
-            </button>
+            {menuOpen && (
+              <div className="absolute right-0 mt-2 w-48 bg-white dark:bg-gray-800 rounded-lg shadow-lg border border-gray-200 dark:border-gray-700 py-1 z-50">
+                <button
+                  onClick={() => handleMenuAction(handleSave)}
+                  className="w-full px-4 py-3 text-left hover:bg-gray-100 dark:hover:bg-gray-700 flex items-center gap-3 text-gray-900 dark:text-gray-100 transition-colors"
+                >
+                  <Save size={18} className="text-green-500" />
+                  <span>Save</span>
+                </button>
 
-            <button
-              onClick={handleShare}
-              className="p-2 sm:px-3 sm:py-2 bg-orange-500 text-white rounded-md hover:bg-orange-600 transition-colors focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-offset-2 flex items-center gap-1"
-              title="Share faders as PNG image"
-            >
-              <Share2 size={16} />
-              <span className="hidden md:inline">Share</span>
-            </button>
+                <button
+                  onClick={() => handleMenuAction(handleLoad)}
+                  className="w-full px-4 py-3 text-left hover:bg-gray-100 dark:hover:bg-gray-700 flex items-center gap-3 text-gray-900 dark:text-gray-100 transition-colors"
+                >
+                  <FolderOpen size={18} className="text-purple-500" />
+                  <span>Load</span>
+                </button>
 
-            <button
-              onClick={handleReset}
-              className="p-2 sm:px-3 sm:py-2 bg-red-500 text-white rounded-md hover:bg-red-600 transition-colors focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2 flex items-center gap-1"
-              title="Reset all faders"
-            >
-              <RotateCcw size={16} />
-              <span className="hidden md:inline">Reset</span>
-            </button>
+                <button
+                  onClick={() => handleMenuAction(handleShare)}
+                  className="w-full px-4 py-3 text-left hover:bg-gray-100 dark:hover:bg-gray-700 flex items-center gap-3 text-gray-900 dark:text-gray-100 transition-colors"
+                >
+                  <Share2 size={18} className="text-orange-500" />
+                  <span>Share</span>
+                </button>
+
+                <div className="border-t border-gray-200 dark:border-gray-700 my-1"></div>
+
+                <button
+                  onClick={() => handleMenuAction(handleReset)}
+                  className="w-full px-4 py-3 text-left hover:bg-gray-100 dark:hover:bg-gray-700 flex items-center gap-3 text-gray-900 dark:text-gray-100 transition-colors"
+                >
+                  <RotateCcw size={18} className="text-red-500" />
+                  <span>Reset</span>
+                </button>
+              </div>
+            )}
           </div>
         </div>
       </header>
