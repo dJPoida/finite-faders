@@ -2,18 +2,21 @@
 
 import { useState, useRef, useEffect } from "react"
 import { useSimpleStore } from "@/lib/simple-store"
-import { Save, FolderOpen, RotateCcw, Share2, Menu, X, Info } from "lucide-react"
+import { Save, FolderOpen, RotateCcw, Share2, Menu, X, Info, List } from "lucide-react"
 import html2canvas from "html2canvas"
 import About from "@/components/Modals/About"
+import PresetSelector from "@/components/Modals/PresetSelector"
+import type { Preset } from "@/data/presets"
 
 interface HeaderProps {
   faderBankRef?: React.RefObject<HTMLDivElement | null>
 }
 
 export default function Header({ faderBankRef }: HeaderProps) {
-  const { reset, addEntity } = useSimpleStore()
+  const { reset, addEntity, loadPreset } = useSimpleStore()
   const [showSaveLoad, setShowSaveLoad] = useState(false)
   const [showAbout, setShowAbout] = useState(false)
+  const [showPresets, setShowPresets] = useState(false)
   const [menuOpen, setMenuOpen] = useState(false)
 
   const handleSave = () => {
@@ -22,6 +25,16 @@ export default function Header({ faderBankRef }: HeaderProps) {
 
   const handleLoad = () => {
     setShowSaveLoad(true)
+  }
+
+  const handleLoadPreset = (preset: Preset) => {
+    loadPreset({
+      values: preset.entities.map(e => e.value),
+      locks: preset.entities.map(e => e.locked),
+      labels: preset.entities.map(e => e.label),
+      colors: preset.entities.map(e => e.color),
+      unit: preset.unit
+    })
   }
 
   const handleReset = () => {
@@ -138,6 +151,16 @@ export default function Header({ faderBankRef }: HeaderProps) {
             {menuOpen && (
               <div className="absolute right-0 mt-2 w-48 bg-white dark:bg-gray-800 rounded-lg shadow-lg border border-gray-200 dark:border-gray-700 py-1 z-50">
                 <button
+                  onClick={() => handleMenuAction(() => setShowPresets(true))}
+                  className="w-full px-4 py-3 text-left hover:bg-gray-100 dark:hover:bg-gray-700 flex items-center gap-3 text-gray-900 dark:text-gray-100 transition-colors"
+                >
+                  <List size={18} className="text-blue-500" />
+                  <span>Load Preset</span>
+                </button>
+
+                <div className="border-t border-gray-200 dark:border-gray-700 my-1"></div>
+
+                <button
                   onClick={() => handleMenuAction(handleSave)}
                   className="w-full px-4 py-3 text-left hover:bg-gray-100 dark:hover:bg-gray-700 flex items-center gap-3 text-gray-900 dark:text-gray-100 transition-colors"
                 >
@@ -188,6 +211,12 @@ export default function Header({ faderBankRef }: HeaderProps) {
       </header>
 
       <About isOpen={showAbout} onClose={() => setShowAbout(false)} />
+
+      <PresetSelector
+        isOpen={showPresets}
+        onClose={() => setShowPresets(false)}
+        onSelectPreset={handleLoadPreset}
+      />
 
       {showSaveLoad && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">

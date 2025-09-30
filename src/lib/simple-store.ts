@@ -15,6 +15,7 @@ interface SimpleAppState {
   setUnit: (unit: string) => void
   addEntity: () => void
   removeEntity: (index: number) => void
+  loadPreset: (preset: { values: number[], locks: boolean[], labels: string[], colors: string[], unit: string }) => void
   reset: () => void
   setHasHydrated: (state: boolean) => void
 }
@@ -192,6 +193,13 @@ export const useSimpleStore = create<SimpleAppState>()(
           labels: newLabels,
           colors: newColors
         }
+      }),
+      loadPreset: (preset) => set({
+        values: preset.values,
+        locks: preset.locks,
+        labels: preset.labels,
+        colors: preset.colors,
+        unit: preset.unit
       }),
       reset: () => set({ ...initialState, _hasHydrated: true }),
       setHasHydrated: (state) => set({ _hasHydrated: state }),

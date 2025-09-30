@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 
 interface AddEditEntityProps {
   isOpen: boolean
@@ -29,6 +29,15 @@ export default function AddEditEntity({ isOpen, onClose, onSave, onDelete, initi
   const [label, setLabel] = useState(initialData?.label || "")
   const [color, setColor] = useState(initialData?.color || presetColors[0])
   const [locked, setLocked] = useState(initialData?.locked || false)
+
+  // Update state when initialData changes
+  useEffect(() => {
+    if (isOpen && initialData) {
+      setLabel(initialData.label)
+      setColor(initialData.color || presetColors[0])
+      setLocked(initialData.locked)
+    }
+  }, [isOpen, initialData])
 
   if (!isOpen) return null
 
