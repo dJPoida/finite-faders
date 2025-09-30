@@ -25,11 +25,10 @@ export const presets: Preset[] = [
     description: "Balance time between children, work, and essential rest",
     unit: "Time",
     entities: [
-      { label: "Kid A", value: 25, locked: false, color: defaultColors[0] },
-      { label: "Kid B", value: 20, locked: false, color: defaultColors[1] },
-      { label: "Kid C", value: 15, locked: false, color: defaultColors[2] },
-      { label: "Work", value: 25, locked: false, color: defaultColors[3] },
-      { label: "Sleep", value: 15, locked: true, color: defaultColors[4] }
+      { label: "Family", value: 25, locked: false, color: defaultColors[0] },
+      { label: "Work", value: 30, locked: true, color: defaultColors[2] },
+      { label: "Sleep", value: 30, locked: false, color: defaultColors[3] },
+      { label: "Hobbies", value: 15, locked: false, color: defaultColors[4] }
     ]
   },
   {
