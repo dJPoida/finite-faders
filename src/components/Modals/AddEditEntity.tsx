@@ -6,6 +6,7 @@ interface AddEditEntityProps {
   isOpen: boolean
   onClose: () => void
   onSave: (entity: { label: string; color?: string; locked: boolean }) => void
+  onDelete?: () => void
   initialData?: {
     label: string
     color?: string
@@ -24,7 +25,7 @@ const presetColors = [
   "#84CC16", // lime
 ]
 
-export default function AddEditEntity({ isOpen, onClose, onSave, initialData }: AddEditEntityProps) {
+export default function AddEditEntity({ isOpen, onClose, onSave, onDelete, initialData }: AddEditEntityProps) {
   const [label, setLabel] = useState(initialData?.label || "")
   const [color, setColor] = useState(initialData?.color || presetColors[0])
   const [locked, setLocked] = useState(initialData?.locked || false)
@@ -113,6 +114,20 @@ export default function AddEditEntity({ isOpen, onClose, onSave, initialData }: 
         </div>
 
         <div className="flex gap-3 mt-6">
+          {initialData && onDelete && (
+            <button
+              onClick={() => {
+                if (confirm("Are you sure you want to delete this entity?")) {
+                  onDelete()
+                  onClose()
+                }
+              }}
+              className="px-4 py-2 bg-red-500 text-white rounded-md hover:bg-red-600 transition-colors focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2"
+              title="Delete entity"
+            >
+              Delete
+            </button>
+          )}
           <button
             onClick={handleCancel}
             className="flex-1 px-4 py-2 bg-gray-500 text-white rounded-md hover:bg-gray-600 transition-colors focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2"

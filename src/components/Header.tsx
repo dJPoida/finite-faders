@@ -2,7 +2,7 @@
 
 import { useState, useRef, useEffect } from "react"
 import { useSimpleStore } from "@/lib/simple-store"
-import { Save, FolderOpen, RotateCcw, Share2, Menu, X, Edit3, Info } from "lucide-react"
+import { Save, FolderOpen, RotateCcw, Share2, Menu, X, Info } from "lucide-react"
 import html2canvas from "html2canvas"
 import About from "@/components/Modals/About"
 
@@ -11,7 +11,7 @@ interface HeaderProps {
 }
 
 export default function Header({ faderBankRef }: HeaderProps) {
-  const { reset, editMode, setEditMode } = useSimpleStore()
+  const { reset, addEntity } = useSimpleStore()
   const [showSaveLoad, setShowSaveLoad] = useState(false)
   const [showAbout, setShowAbout] = useState(false)
   const [menuOpen, setMenuOpen] = useState(false)
@@ -116,16 +116,13 @@ export default function Header({ faderBankRef }: HeaderProps) {
 
           <div className="flex items-center gap-2">
             <button
-              onClick={() => setEditMode(!editMode)}
-              className={`p-2 rounded-md transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500 ${
-                editMode
-                  ? "text-gray-700 dark:text-gray-300 bg-blue-100 dark:bg-blue-900"
-                  : "text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700"
-              }`}
-              title={editMode ? "Exit edit mode" : "Edit mode"}
-              aria-label={editMode ? "Exit edit mode" : "Edit mode"}
+              onClick={() => addEntity()}
+              className="p-2 rounded-md transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700"
+              title="Add entity"
+              aria-label="Add entity"
             >
-              <Edit3 size={24} />
+              <span className="text-2xl leading-none hidden sm:inline">+</span>
+              <span className="text-xl leading-none sm:hidden">+</span>
             </button>
 
             <div className="relative menu-container">

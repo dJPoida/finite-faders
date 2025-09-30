@@ -61,7 +61,7 @@ export default function Fader({ index, label, color, value, locked, onToggleLock
     <div className="flex flex-col items-center gap-1 sm:gap-2 p-2 sm:p-3 bg-white dark:bg-gray-900 rounded-lg border-2 min-w-[60px] sm:min-w-[80px] h-full" style={{ borderColor: color }}>
       <button
         onClick={onEditLabel}
-        className="text-xs font-medium text-gray-700 dark:text-gray-300 text-center w-full truncate flex-shrink-0 hover:opacity-70 transition-opacity cursor-pointer"
+        className="text-xs font-bold text-gray-900 dark:text-gray-100 text-center w-full truncate flex-shrink-0 hover:text-blue-500 dark:hover:text-blue-400 transition-colors cursor-pointer underline decoration-dotted decoration-2"
         title="Click to edit label"
       >
         {label}

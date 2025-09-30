@@ -1,57 +1,45 @@
 "use client"
 
+import { useState } from "react"
 import { useSimpleStore } from "@/lib/simple-store"
-
-const presetUnits = ["Time", "Effort", "Care", "F-given", "Love"]
+import UnitSelection from "@/components/Modals/UnitSelection"
 
 export default function Footer() {
-  const { unit, editMode } = useSimpleStore()
+  const { unit, setUnit } = useSimpleStore()
+  const [showUnitModal, setShowUnitModal] = useState(false)
 
   return (
-    <footer className="w-full p-2 sm:p-3 border-t border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900 flex-shrink-0">
-      <div className="max-w-4xl mx-auto">
-        <div className="flex flex-wrap items-center justify-center gap-2">
-          <div className="flex items-center gap-2">
-            <span className="text-xs sm:text-sm text-gray-600 dark:text-gray-400">
-              Unit:
+    <>
+      <footer className="w-full p-2 sm:p-3 border-t border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900 flex-shrink-0">
+        <div className="max-w-4xl mx-auto">
+          <div className="flex flex-wrap items-center justify-center gap-1">
+            <span className="text-sm sm:text-base text-gray-700 dark:text-gray-300">
+              How much
             </span>
-            {editMode ? (
-              <>
-                <select
-                  id="unit-select"
-                  value={unit}
-                  onChange={(e) => useSimpleStore.setState({ unit: e.target.value })}
-                  className="px-2 py-1 text-sm border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                >
-                  {presetUnits.map((u) => (
-                    <option key={u} value={u}>
-                      {u}
-                    </option>
-                  ))}
-                  <option value="Custom">Custom</option>
-                </select>
+            <button
+              onClick={() => setShowUnitModal(true)}
+              className="text-sm sm:text-base text-gray-900 dark:text-gray-100 font-bold hover:text-blue-500 dark:hover:text-blue-400 transition-colors cursor-pointer underline decoration-dotted decoration-2"
+              title="Click to change unit"
+            >
+              {unit}
+            </button>
+            <span className="text-sm sm:text-base text-gray-700 dark:text-gray-300">
+              you have to go around!
+            </span>
+          </div>
 
-                {unit === "Custom" && (
-                  <input
-                    type="text"
-                    placeholder="Enter custom unit"
-                    onChange={(e) => useSimpleStore.setState({ unit: e.target.value || "Custom" })}
-                    className="px-2 py-1 text-sm border border-gray-300 dark:border-gray-600 rounded-md bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  />
-                )}
-              </>
-            ) : (
-              <span className="text-sm text-gray-900 dark:text-gray-100 font-medium">
-                {unit}
-              </span>
-            )}
+          <div className="mt-1 text-xs text-gray-500 dark:text-gray-400 text-center">
+            Priorities that add up. Always.
           </div>
         </div>
+      </footer>
 
-        <div className="mt-1 text-xs text-gray-500 dark:text-gray-400 text-center">
-          Priorities that add up. Always.
-        </div>
-      </div>
-    </footer>
+      <UnitSelection
+        isOpen={showUnitModal}
+        onClose={() => setShowUnitModal(false)}
+        onSave={setUnit}
+        currentUnit={unit}
+      />
+    </>
   )
 }

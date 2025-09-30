@@ -7,16 +7,15 @@ interface SimpleAppState {
   labels: string[] // Custom labels for each entity
   colors: string[] // Custom colors for each entity
   unit: string
-  editMode: boolean // Controls whether add/remove entity buttons are visible
   _hasHydrated: boolean
   setValue: (index: number, newValue: number) => void
   toggleLock: (index: number) => void
   updateLabel: (index: number, label: string) => void
   updateColor: (index: number, color: string) => void
+  setUnit: (unit: string) => void
   addEntity: () => void
   removeEntity: (index: number) => void
   reset: () => void
-  setEditMode: (enabled: boolean) => void
   setHasHydrated: (state: boolean) => void
 }
 
@@ -28,7 +27,6 @@ const initialState = {
   labels: ["Entity 1", "Entity 2", "Entity 3", "Entity 4"],
   colors: [defaultColors[0], defaultColors[1], defaultColors[2], defaultColors[3]],
   unit: "Time",
-  editMode: false,
   _hasHydrated: false,
 }
 
@@ -168,6 +166,7 @@ export const useSimpleStore = create<SimpleAppState>()(
       updateColor: (index, color) => set((state) => ({
         colors: state.colors.map((c, i) => i === index ? color : c)
       })),
+      setUnit: (unit) => set({ unit }),
       addEntity: () => set((state) => {
         if (state.values.length >= 8) return state
         const newCount = state.values.length + 1
@@ -195,7 +194,6 @@ export const useSimpleStore = create<SimpleAppState>()(
         }
       }),
       reset: () => set({ ...initialState, _hasHydrated: true }),
-      setEditMode: (enabled) => set({ editMode: enabled }),
       setHasHydrated: (state) => set({ _hasHydrated: state }),
     }),
     {
