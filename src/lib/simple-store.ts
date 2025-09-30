@@ -7,6 +7,7 @@ interface SimpleAppState {
   labels: string[] // Custom labels for each entity
   colors: string[] // Custom colors for each entity
   unit: string
+  _dragInitialValues: number[] | null // Captured values at start of drag for weighted distribution
   _hasHydrated: boolean
   setValue: (index: number, newValue: number) => void
   toggleLock: (index: number) => void
@@ -16,6 +17,8 @@ interface SimpleAppState {
   addEntity: () => void
   removeEntity: (index: number) => void
   loadPreset: (preset: { values: number[], locks: boolean[], labels: string[], colors: string[], unit: string }) => void
+  startDrag: () => void
+  endDrag: () => void
   reset: () => void
   setHasHydrated: (state: boolean) => void
 }
@@ -28,14 +31,21 @@ const initialState = {
   labels: ["Entity 1", "Entity 2", "Entity 3", "Entity 4"],
   colors: [defaultColors[0], defaultColors[1], defaultColors[2], defaultColors[3]],
   unit: "Time",
+  _dragInitialValues: null,
   _hasHydrated: false,
 }
 
-// Redistribute remaining points among unlocked entities
-function redistributeToSum100(values: number[], locks: boolean[], changedIndex: number, newValue: number): number[] {
+// Redistribute remaining points among unlocked entities using weighted distribution
+function redistributeToSum100(
+  values: number[],
+  locks: boolean[],
+  changedIndex: number,
+  newValue: number,
+  initialValues: number[] | null
+): number[] {
   const result = [...values]
 
-  // Calculate the maximum possible value for the changed entity
+  // Calculate the sum of locked entities (excluding the one being changed)
   const lockedSum = result
     .map((val, i) => i !== changedIndex && locks[i] ? val : 0)
     .reduce((sum, val) => sum + val, 0)
@@ -44,77 +54,58 @@ function redistributeToSum100(values: number[], locks: boolean[], changedIndex: 
   // Clamp the new value to valid range considering locked entities
   result[changedIndex] = Math.max(0, Math.min(maxPossible, Math.round(newValue)))
 
-  const currentSum = result.reduce((sum, val) => sum + val, 0)
-  const diff = currentSum - 100
-
-  if (diff === 0) return result
-
   // Find unlocked entities (excluding the one we just changed)
   const unlockedIndices = result
     .map((_, i) => i)
     .filter(i => i !== changedIndex && !locks[i])
 
   if (unlockedIndices.length === 0) {
-    // If all other entities are locked, we need to adjust the changed value to make sum = 100
+    // If all other entities are locked, adjust the changed value to make sum = 100
     const maxPossible = 100 - result.filter((_, i) => i !== changedIndex).reduce((sum, val) => sum + val, 0)
     result[changedIndex] = Math.max(0, Math.min(100, maxPossible))
     return result
   }
 
-  // Distribute the difference among unlocked entities, preventing negatives
-  let remaining = -diff
-  const unlockedSum = unlockedIndices.reduce((sum, i) => sum + result[i], 0)
+  // Calculate how much remains for the other unlocked entities
+  const remaining = 100 - result[changedIndex] - lockedSum
 
-  if (unlockedSum === 0) {
-    // If unlocked entities are all zero, distribute equally
-    const perEntity = Math.max(0, Math.floor(remaining / unlockedIndices.length))
-    const remainder = Math.max(0, remaining % unlockedIndices.length)
+  // Use initial values as weights if available (during drag), otherwise use current values
+  const weights = initialValues || result
+  const weightSum = unlockedIndices.reduce((sum, idx) => sum + weights[idx], 0)
+
+  if (weightSum === 0) {
+    // If all weights are zero, distribute equally
+    const perEntity = Math.floor(remaining / unlockedIndices.length)
+    const remainder = remaining % unlockedIndices.length
 
     for (let i = 0; i < unlockedIndices.length; i++) {
       const idx = unlockedIndices[i]
       result[idx] = perEntity + (i < remainder ? 1 : 0)
     }
   } else {
-    // Distribute proportionally, but ensure no entity goes negative
-    const changes: { idx: number; change: number }[] = []
-    let totalChangeNeeded = remaining
+    // Distribute proportionally based on initial weights using Hamilton method
+    const allocations: { idx: number; base: number; fraction: number }[] = []
 
     for (const idx of unlockedIndices) {
-      const proportion = result[idx] / unlockedSum
-      const idealChange = Math.round(proportion * remaining)
-      const maxPossibleChange = remaining > 0 ? 100 - result[idx] : result[idx]
-      const actualChange = Math.max(-maxPossibleChange, Math.min(maxPossibleChange, idealChange))
+      const proportion = weights[idx] / weightSum
+      const ideal = remaining * proportion
+      const base = Math.floor(ideal)
+      const fraction = ideal - base
 
-      changes.push({ idx, change: actualChange })
-      totalChangeNeeded -= actualChange
+      allocations.push({ idx, base, fraction })
     }
 
-    // Apply the changes
-    for (const { idx, change } of changes) {
-      result[idx] = Math.max(0, Math.min(100, result[idx] + change))
-    }
+    // Sort by fractional part (largest first) for Hamilton method
+    allocations.sort((a, b) => b.fraction - a.fraction)
 
-    // If we still have remaining change to distribute, do it iteratively
-    let iterations = 0
-    while (Math.abs(totalChangeNeeded) > 0 && iterations < 100) {
-      const finalSum = result.reduce((sum, val) => sum + val, 0)
-      const diff = 100 - finalSum
+    // Calculate how many remainder points to distribute
+    const baseSum = allocations.reduce((sum, a) => sum + a.base, 0)
+    const remainderPoints = remaining - baseSum
 
-      if (diff === 0) break
-
-      // Find entities that can still accept change
-      const canAdjust = unlockedIndices.filter(idx => {
-        if (diff > 0) return result[idx] < 100
-        else return result[idx] > 0
-      })
-
-      if (canAdjust.length === 0) break
-
-      // Distribute 1 point at a time to avoid overshooting
-      const step = diff > 0 ? 1 : -1
-      result[canAdjust[iterations % canAdjust.length]] += step
-      totalChangeNeeded -= step
-      iterations++
+    // Assign values
+    for (let i = 0; i < allocations.length; i++) {
+      const allocation = allocations[i]
+      result[allocation.idx] = allocation.base + (i < remainderPoints ? 1 : 0)
     }
   }
 
@@ -156,8 +147,14 @@ export const useSimpleStore = create<SimpleAppState>()(
     (set, get) => ({
       ...initialState,
       setValue: (index, newValue) => set((state) => ({
-        values: redistributeToSum100(state.values, state.locks, index, newValue)
+        values: redistributeToSum100(state.values, state.locks, index, newValue, state._dragInitialValues)
       })),
+      startDrag: () => set((state) => ({
+        _dragInitialValues: [...state.values]
+      })),
+      endDrag: () => set({
+        _dragInitialValues: null
+      }),
       toggleLock: (index) => set((state) => ({
         locks: state.locks.map((locked, i) => i === index ? !locked : locked)
       })),

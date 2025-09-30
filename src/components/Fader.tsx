@@ -15,7 +15,7 @@ interface FaderProps {
 }
 
 export default function Fader({ index, label, color, value, locked, onEditLabel }: FaderProps) {
-  const { setValue } = useSimpleStore()
+  const { setValue, startDrag, endDrag } = useSimpleStore()
 
   const handleValueChange = useCallback(
     (newValues: number[]) => {
@@ -23,6 +23,14 @@ export default function Fader({ index, label, color, value, locked, onEditLabel 
     },
     [index, setValue]
   )
+
+  const handlePointerDown = useCallback(() => {
+    startDrag()
+  }, [startDrag])
+
+  const handlePointerUp = useCallback(() => {
+    endDrag()
+  }, [endDrag])
 
   const handleKeyDown = useCallback(
     (event: React.KeyboardEvent) => {
@@ -80,6 +88,8 @@ export default function Fader({ index, label, color, value, locked, onEditLabel 
           orientation="vertical"
           value={[value]}
           onValueChange={handleValueChange}
+          onPointerDown={handlePointerDown}
+          onPointerUp={handlePointerUp}
           min={0}
           max={100}
           step={1}
