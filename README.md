@@ -18,9 +18,11 @@ The app enforces a fundamental constraint: **all sliders always sum to exactly 1
 ### Core Functionality
 - **Mixing Desk Interface**: Vertical faders arranged horizontally like a professional mixing console
 - **Constraint Enforcement**: All sliders automatically sum to 100% - adjusting one redistributes others proportionally
-- **Edit Mode**: Toggle between viewing/adjusting mode and editing mode for adding/removing entities
-- **Dynamic Entities**: Add up to 6 entities or remove down to minimum of 2 entities
-- **Customizable Units**: Choose from preset units (Time, Effort, Care, F-given, Love) or define custom units
+- **Inline Editing**: Click any entity label to edit name, color, lock status, or delete
+- **Custom Labels**: Name each entity for quick visual identification of your decisions
+- **Color Coding**: Assign colors to entities - applied to borders, sliders, and controls for visual distinction
+- **Dynamic Entities**: Add up to 8 entities (click + button in header) or remove down to minimum of 2 entities
+- **Customizable Units**: Click the unit text in footer to choose from 8 preset units (Time, Effort, Care, Energy, Love, Focus, Attention, Money) or define custom units
 - **Lock System**: Lock individual faders to prevent auto-adjustment, creating hard constraints
 - **Smart Redistribution**: Handles edge cases like locked entities and impossible constraints gracefully
 - **Keyboard Navigation**: Full accessibility with arrow keys, Page Up/Down, Home/End
@@ -61,18 +63,22 @@ npm start
 
 ## How to Use
 
-1. **Edit Mode**: Click the edit icon (pencil) in the header to enable editing
-   - Add new entities (up to 6 total) by clicking the "+" button
-   - Remove entities (minimum 2 required) by clicking the "×" button on each fader
-   - Change the unit type (Time, Effort, Care, F-given, Love, or Custom)
-2. **Adjust Faders**: Click and drag vertical sliders or use keyboard navigation
-3. **Lock Constraints**: Click the lock button above each fader value to fix that entity's allocation
-4. **Automatic Rebalancing**: Other unlocked faders adjust proportionally to maintain 100% total
-5. **Menu Functions**: Click the hamburger menu in the header to:
-   - **Save**: Store scenarios for later use
-   - **Load**: Retrieve previously saved scenarios
+1. **Edit Entities**: Click any entity label (shown with dotted underline) to open edit dialog
+   - Change the entity name for easy identification
+   - Select a color (applied to borders, sliders, and controls)
+   - Toggle lock status
+   - Delete entity (if more than 2 entities exist)
+2. **Add Entities**: Click the "+" button in the header to add new entities (up to 8 total)
+3. **Adjust Faders**: Click and drag vertical sliders or use keyboard navigation
+4. **Lock Constraints**: Click the lock button below each fader to fix that entity's allocation
+5. **Change Unit**: Click the unit text in the footer (e.g., "Time") to choose from presets or enter custom
+6. **Automatic Rebalancing**: Other unlocked faders adjust proportionally to maintain 100% total
+7. **Menu Functions**: Click the hamburger menu in the header to:
+   - **Save**: Store scenarios for later use (coming soon)
+   - **Load**: Retrieve previously saved scenarios (coming soon)
    - **Share**: Export and share your allocation as an image
    - **Reset**: Return to default values
+   - **About**: Learn more about the app
 
 ### Keyboard Controls (per fader)
 - `↑/↓` arrows: ±1 point
@@ -95,11 +101,13 @@ npm start
 ### Key Files
 
 #### Core Logic
-- `src/lib/simple-store.ts` - Main state management with constraint enforcement and edit mode
-- `src/components/Fader.tsx` - Individual slider component with lock functionality
-- `src/components/FaderBank.tsx` - Main mixing desk layout with add/remove entity controls
-- `src/components/Header.tsx` - Header with edit mode toggle and hamburger menu
-- `src/components/Footer.tsx` - Footer with unit selector
+- `src/lib/simple-store.ts` - Main state management with constraint enforcement, labels, and colors
+- `src/components/Fader.tsx` - Individual slider component with clickable labels and lock functionality
+- `src/components/FaderBank.tsx` - Main mixing desk layout managing entity editing
+- `src/components/Header.tsx` - Header with + add button and hamburger menu
+- `src/components/Footer.tsx` - Footer with clickable unit text
+- `src/components/Modals/AddEditEntity.tsx` - Entity editing dialog for name, color, lock, and delete
+- `src/components/Modals/UnitSelection.tsx` - Unit selection dialog with presets and custom input
 - `src/App.tsx` - Main application component with dynamic viewport height handling
 - `src/main.tsx` - Application entry point
 
@@ -111,7 +119,7 @@ npm start
 
 ### State Management
 
-The app uses a simplified constraint-based system with edit mode control:
+The app uses a constraint-based system with inline editing:
 
 ```typescript
 // Core constraint: sum always equals 100
@@ -120,13 +128,20 @@ const total = values.reduce((sum, val) => sum + val, 0) === 100
 // Lock system prevents specific entities from changing
 const locks: boolean[] = [false, true, false, false] // Second entity locked
 
-// Edit mode controls visibility of add/remove/unit selection UI
-const editMode: boolean = false
+// Entity customization
+const labels: string[] = ["Work", "Family", "Health", "Hobbies"]
+const colors: string[] = ["#3B82F6", "#EF4444", "#10B981", "#F59E0B"]
+
+// Unit customization
+const unit: string = "Time" // or any custom string
 
 // Smart redistribution respects constraints
 function setValue(index: number, newValue: number): void
+function updateLabel(index: number, label: string): void
+function updateColor(index: number, color: string): void
+function setUnit(unit: string): void
 
-// Entity management (2-6 entities allowed)
+// Entity management (2-8 entities allowed)
 function addEntity(): void
 function removeEntity(index: number): void
 ```
@@ -176,7 +191,8 @@ function removeEntity(index: number): void
 - Performance optimization for mobile devices
 - Calculator-style UI that never requires scrolling
 - Constraint satisfaction as core requirement
-- Edit mode separation for clean user experience
+- Inline editing for intuitive, mode-free user experience
+- Visual consistency with dotted underlines for interactive elements
 
 ## Deployment
 
@@ -195,13 +211,13 @@ npm run preview
 ## Future Enhancements
 
 - Multi-scenario comparison view
-- Import/export scenario data (JSON format)
+- Import/export scenario data (JSON format) - Save/Load functionality
 - Undo/redo functionality
-- Custom entity naming (beyond Entity 1, Entity 2, etc.)
 - Advanced constraint types (min/max ranges)
 - Team collaboration features
 - History tracking for allocation changes
 - Data visualization and analytics
+- Drag-and-drop entity reordering
 
 ---
 
