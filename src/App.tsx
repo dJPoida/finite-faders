@@ -30,7 +30,7 @@ export default function App() {
       <Header faderBankRef={faderBankRef} />
 
       <main className="flex-1 flex flex-col items-center justify-center p-2 sm:p-4 min-h-0">
-        <div className="w-full h-full max-w-6xl mx-auto flex flex-col">
+        <div className="w-full max-w-6xl mx-auto flex flex-col items-center">
           <div className="text-center mb-2 sm:mb-4 flex-shrink-0">
             <h2 className="text-sm sm:text-lg text-gray-600 dark:text-gray-400">
               Allocate your finite capacity across what matters most
@@ -38,7 +38,7 @@ export default function App() {
           </div>
 
           <ClientOnlyStore>
-            <FaderBank ref={faderBankRef} className="flex-1 min-h-0" />
+            <FaderBank ref={faderBankRef} className="w-full h-[60vh] max-h-[60vh]" />
           </ClientOnlyStore>
         </div>
       </main>
