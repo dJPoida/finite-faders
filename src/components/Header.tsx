@@ -2,8 +2,9 @@
 
 import { useState, useRef, useEffect } from "react"
 import { useSimpleStore } from "@/lib/simple-store"
-import { Save, FolderOpen, RotateCcw, Share2, Menu, X, Edit3 } from "lucide-react"
+import { Save, FolderOpen, RotateCcw, Share2, Menu, X, Edit3, Info } from "lucide-react"
 import html2canvas from "html2canvas"
+import About from "@/components/Modals/About"
 
 interface HeaderProps {
   faderBankRef?: React.RefObject<HTMLDivElement | null>
@@ -12,6 +13,7 @@ interface HeaderProps {
 export default function Header({ faderBankRef }: HeaderProps) {
   const { reset, editMode, setEditMode } = useSimpleStore()
   const [showSaveLoad, setShowSaveLoad] = useState(false)
+  const [showAbout, setShowAbout] = useState(false)
   const [menuOpen, setMenuOpen] = useState(false)
 
   const handleSave = () => {
@@ -171,12 +173,24 @@ export default function Header({ faderBankRef }: HeaderProps) {
                   <RotateCcw size={18} className="text-red-500" />
                   <span>Reset</span>
                 </button>
+
+                <div className="border-t border-gray-200 dark:border-gray-700 my-1"></div>
+
+                <button
+                  onClick={() => handleMenuAction(() => setShowAbout(true))}
+                  className="w-full px-4 py-3 text-left hover:bg-gray-100 dark:hover:bg-gray-700 flex items-center gap-3 text-gray-900 dark:text-gray-100 transition-colors"
+                >
+                  <Info size={18} className="text-blue-500" />
+                  <span>About</span>
+                </button>
               </div>
             )}
           </div>
           </div>
         </div>
       </header>
+
+      <About isOpen={showAbout} onClose={() => setShowAbout(false)} />
 
       {showSaveLoad && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
