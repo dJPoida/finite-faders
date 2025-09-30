@@ -6,15 +6,16 @@ import Fader from "./Fader"
 
 interface FaderBankProps {
   className?: string
+  style?: React.CSSProperties
 }
 
-const FaderBank = forwardRef<HTMLDivElement, FaderBankProps>(({ className = "" }, ref) => {
+const FaderBank = forwardRef<HTMLDivElement, FaderBankProps>(({ className = "", style }, ref) => {
   const { values, locks, editMode, toggleLock, addEntity, removeEntity } = useSimpleStore()
 
   const faderLabels = values.map((_, i) => `Entity ${i + 1}`)
 
   return (
-    <div ref={ref} className={`w-full h-full flex flex-col ${className}`}>
+    <div ref={ref} className={`w-full h-full flex flex-col ${className}`} style={style}>
       <div className="flex-1 flex flex-row gap-1 sm:gap-2 p-2 sm:p-4 overflow-x-auto items-stretch justify-center min-h-0">
         {values.map((value, index) => (
           <div key={index} className="relative group flex-shrink-0 h-full">

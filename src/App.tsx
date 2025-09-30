@@ -38,7 +38,7 @@ export default function App() {
           </div>
 
           <ClientOnlyStore>
-            <FaderBank ref={faderBankRef} className="w-full h-[60vh] max-h-[60vh]" />
+            <FaderBank ref={faderBankRef} className="w-full" style={{ height: 'calc(var(--vh, 1vh) * 60)' }} />
           </ClientOnlyStore>
         </div>
       </main>
