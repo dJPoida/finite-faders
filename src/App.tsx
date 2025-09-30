@@ -1,12 +1,16 @@
-import { useRef, useEffect } from "react"
+import { useRef, useEffect, useState } from "react"
 import Header from "@/components/Header"
 import FaderBank from "@/components/FaderBank"
 import Footer from "@/components/Footer"
 import Onboarding from "@/components/Modals/Onboarding"
 import ClientOnlyStore from "@/components/ClientOnlyStore"
+import UnitSelection from "@/components/Modals/UnitSelection"
+import { useSimpleStore } from "@/lib/simple-store"
 
 export default function App() {
   const faderBankRef = useRef<HTMLDivElement>(null)
+  const { unit, setUnit } = useSimpleStore()
+  const [showUnitModal, setShowUnitModal] = useState(false)
 
   // Fix mobile viewport height to account for browser chrome
   useEffect(() => {
@@ -40,6 +44,24 @@ export default function App() {
           <ClientOnlyStore>
             <FaderBank ref={faderBankRef} className="w-full" style={{ height: 'calc(var(--vh, 1vh) * 60)' }} />
           </ClientOnlyStore>
+
+          <div className="flex-shrink-0 mt-3 sm:mt-4">
+            <div className="flex flex-wrap items-center justify-center gap-1">
+              <span className="text-sm sm:text-base text-gray-700 dark:text-gray-300">
+                How much
+              </span>
+              <button
+                onClick={() => setShowUnitModal(true)}
+                className="text-sm sm:text-base text-gray-900 dark:text-gray-100 font-bold hover:text-blue-500 dark:hover:text-blue-400 transition-colors cursor-pointer underline decoration-dotted decoration-2"
+                title="Click to change unit"
+              >
+                {unit}
+              </button>
+              <span className="text-sm sm:text-base text-gray-700 dark:text-gray-300">
+                you have to go around!
+              </span>
+            </div>
+          </div>
         </div>
       </main>
 
@@ -49,6 +71,12 @@ export default function App() {
       <ClientOnlyStore>
         <Onboarding />
       </ClientOnlyStore>
+      <UnitSelection
+        isOpen={showUnitModal}
+        onClose={() => setShowUnitModal(false)}
+        onSave={setUnit}
+        currentUnit={unit}
+      />
     </div>
   )
 }

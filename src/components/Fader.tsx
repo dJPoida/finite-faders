@@ -11,11 +11,10 @@ interface FaderProps {
   color: string
   value: number
   locked: boolean
-  onToggleLock: () => void
   onEditLabel?: () => void
 }
 
-export default function Fader({ index, label, color, value, locked, onToggleLock, onEditLabel }: FaderProps) {
+export default function Fader({ index, label, color, value, locked, onEditLabel }: FaderProps) {
   const { setValue } = useSimpleStore()
 
   const handleValueChange = useCallback(
@@ -58,10 +57,18 @@ export default function Fader({ index, label, color, value, locked, onToggleLock
   )
 
   return (
-    <div className="flex flex-col items-center gap-1 sm:gap-2 p-2 sm:p-3 bg-white dark:bg-gray-900 rounded-lg border-2 min-w-[60px] sm:min-w-[80px] h-full" style={{ borderColor: color }}>
+    <div className="flex flex-col items-center gap-1 sm:gap-2 p-2 sm:p-3 bg-white dark:bg-gray-900 rounded-lg border-2 w-[70px] sm:w-[90px] h-full" style={{ borderColor: color }}>
       <button
         onClick={onEditLabel}
-        className="text-xs font-bold text-gray-900 dark:text-gray-100 text-center w-full truncate flex-shrink-0 hover:text-blue-500 dark:hover:text-blue-400 transition-colors cursor-pointer underline decoration-dotted decoration-2"
+        className="text-xs font-bold text-gray-900 dark:text-gray-100 text-center w-full flex-shrink-0 hover:text-blue-500 dark:hover:text-blue-400 transition-colors cursor-pointer underline decoration-dotted decoration-2 leading-tight overflow-hidden"
+        style={{
+          height: '2.5rem',
+          display: '-webkit-box',
+          WebkitLineClamp: 2,
+          WebkitBoxOrient: 'vertical',
+          wordBreak: 'break-word',
+          alignItems: 'flex-start'
+        }}
         title="Click to edit label"
       >
         {label}
@@ -83,27 +90,19 @@ export default function Fader({ index, label, color, value, locked, onToggleLock
             <Slider.Range className="absolute w-full rounded-full" style={{ backgroundColor: color }} />
           </Slider.Track>
           <Slider.Thumb
-            className="block w-6 h-6 sm:w-5 sm:h-5 bg-white dark:bg-gray-800 border-2 rounded-full shadow-lg focus:outline-none focus:ring-2 focus:ring-offset-2 cursor-grab active:cursor-grabbing disabled:cursor-not-allowed disabled:opacity-50"
+            className={`block w-6 h-6 sm:w-5 sm:h-5 bg-white dark:bg-gray-800 border-2 shadow-lg focus:outline-none focus:ring-2 focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-70 flex items-center justify-center ${
+              locked ? 'rounded cursor-not-allowed' : 'rounded-full cursor-grab active:cursor-grabbing'
+            }`}
             onKeyDown={handleKeyDown}
             aria-label={`${label} value: ${value}`}
             style={{ touchAction: 'none', borderColor: color, boxShadow: `0 0 0 2px ${color}` }}
-          />
+          >
+            {locked && <Lock size={12} className="text-gray-700 dark:text-gray-300" />}
+          </Slider.Thumb>
         </Slider.Root>
       </div>
 
       <div className="flex flex-col items-center gap-1 w-full justify-center flex-shrink-0">
-        <button
-          onClick={onToggleLock}
-          className={`p-2 rounded border flex items-center justify-center transition-colors ${
-            locked
-              ? "bg-red-500 border-red-500 text-white hover:bg-red-600"
-              : "bg-white dark:bg-gray-800 border-gray-300 dark:border-gray-600 text-gray-600 dark:text-gray-400 hover:border-gray-400 dark:hover:border-gray-500"
-          }`}
-          title={locked ? "Unlock fader" : "Lock fader"}
-          aria-label={locked ? "Unlock fader" : "Lock fader"}
-        >
-          <Lock size={16} />
-        </button>
         <div className="bg-gray-800 dark:bg-gray-200 text-white dark:text-gray-800 px-3 py-2 rounded text-lg font-bold font-mono min-w-[3rem] text-center">
           {value}
         </div>

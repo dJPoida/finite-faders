@@ -11,7 +11,7 @@ interface FaderBankProps {
 }
 
 const FaderBank = forwardRef<HTMLDivElement, FaderBankProps>(({ className = "", style }, ref) => {
-  const { values, locks, labels, colors, toggleLock, updateLabel, updateColor, removeEntity } = useSimpleStore()
+  const { values, locks, labels, colors, updateLabel, updateColor, toggleLock, removeEntity } = useSimpleStore()
   const [editingIndex, setEditingIndex] = useState<number | null>(null)
 
   const handleSaveLabel = (entity: { label: string; color?: string; locked: boolean }) => {
@@ -19,6 +19,10 @@ const FaderBank = forwardRef<HTMLDivElement, FaderBankProps>(({ className = "", 
       updateLabel(editingIndex, entity.label)
       if (entity.color) {
         updateColor(editingIndex, entity.color)
+      }
+      // Update lock state if it changed
+      if (locks[editingIndex] !== entity.locked) {
+        toggleLock(editingIndex)
       }
       setEditingIndex(null)
     }
@@ -43,7 +47,6 @@ const FaderBank = forwardRef<HTMLDivElement, FaderBankProps>(({ className = "", 
                 color={colors[index]}
                 value={value}
                 locked={locks[index]}
-                onToggleLock={() => toggleLock(index)}
                 onEditLabel={() => setEditingIndex(index)}
               />
             </div>
