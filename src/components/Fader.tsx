@@ -55,12 +55,12 @@ export default function Fader({ index, label, value, locked, onToggleLock }: Fad
   )
 
   return (
-    <div className="flex flex-col items-center gap-3 p-3 bg-white dark:bg-gray-900 rounded-lg border border-gray-200 dark:border-gray-700 min-w-[80px]">
-      <span className="text-xs font-medium text-gray-700 dark:text-gray-300 text-center w-full truncate">
+    <div className="flex flex-col items-center gap-1 sm:gap-2 p-2 sm:p-3 bg-white dark:bg-gray-900 rounded-lg border border-gray-200 dark:border-gray-700 min-w-[60px] sm:min-w-[80px] h-full">
+      <span className="text-xs font-medium text-gray-700 dark:text-gray-300 text-center w-full truncate flex-shrink-0">
         {label}
       </span>
 
-      <div className="relative h-48 w-6 flex justify-center">
+      <div className="relative flex-1 w-4 sm:w-6 flex justify-center min-h-0" style={{ touchAction: 'none' }}>
         <Slider.Root
           className="relative h-full w-full flex items-center justify-center"
           orientation="vertical"
@@ -70,22 +70,24 @@ export default function Fader({ index, label, value, locked, onToggleLock }: Fad
           max={100}
           step={1}
           aria-label={`${label} fader`}
+          disabled={locked}
         >
-          <Slider.Track className="relative bg-gray-200 dark:bg-gray-700 h-full w-2 rounded-full">
+          <Slider.Track className="relative bg-gray-200 dark:bg-gray-700 h-full w-2 rounded-full" style={{ touchAction: 'none' }}>
             <Slider.Range className="absolute bg-blue-500 w-full rounded-full" />
           </Slider.Track>
           <Slider.Thumb
-            className="block w-5 h-5 bg-white dark:bg-gray-800 border-2 border-blue-500 rounded-full shadow-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 cursor-grab active:cursor-grabbing"
+            className="block w-6 h-6 sm:w-5 sm:h-5 bg-white dark:bg-gray-800 border-2 border-blue-500 rounded-full shadow-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 cursor-grab active:cursor-grabbing disabled:cursor-not-allowed disabled:opacity-50"
             onKeyDown={handleKeyDown}
             aria-label={`${label} value: ${value}`}
+            style={{ touchAction: 'none' }}
           />
         </Slider.Root>
       </div>
 
-      <div className="flex items-center gap-2 w-full justify-center">
+      <div className="flex items-center gap-1 sm:gap-2 w-full justify-center flex-shrink-0">
         <button
           onClick={onToggleLock}
-          className={`w-5 h-5 rounded border flex items-center justify-center text-xs transition-colors ${
+          className={`w-4 h-4 sm:w-5 sm:h-5 rounded border flex items-center justify-center text-xs transition-colors ${
             locked
               ? "bg-red-500 border-red-500 text-white"
               : "bg-transparent border-gray-300 dark:border-gray-600 text-gray-600 dark:text-gray-400 hover:border-gray-400"
@@ -95,7 +97,7 @@ export default function Fader({ index, label, value, locked, onToggleLock }: Fad
         >
           {locked ? "🔒" : "⚬"}
         </button>
-        <div className="bg-gray-800 dark:bg-gray-200 text-white dark:text-gray-800 px-1 py-0.5 rounded text-xs font-mono min-w-[2rem] text-center">
+        <div className="bg-gray-800 dark:bg-gray-200 text-white dark:text-gray-800 px-1 py-0.5 rounded text-xs font-mono min-w-[1.5rem] sm:min-w-[2rem] text-center">
           {value}
         </div>
       </div>

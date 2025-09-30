@@ -78,47 +78,47 @@ export default function Header({ faderBankRef }: HeaderProps) {
 
   return (
     <>
-      <header className="w-full p-4 border-b border-gray-200 dark:border-gray-800">
-        <div className="max-w-4xl mx-auto flex items-center justify-between">
-          <h1 className="text-2xl font-bold text-gray-900 dark:text-gray-100">
+      <header className="w-full p-2 sm:p-3 border-b border-gray-200 dark:border-gray-800 flex-shrink-0">
+        <div className="max-w-4xl mx-auto flex items-center justify-between gap-2">
+          <h1 className="text-lg sm:text-2xl font-bold text-gray-900 dark:text-gray-100">
             Finite Faders
           </h1>
 
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-1 sm:gap-2">
             <button
               onClick={handleSave}
-              className="px-3 py-2 bg-green-500 text-white rounded-md hover:bg-green-600 transition-colors focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2 flex items-center gap-1"
+              className="p-2 sm:px-3 sm:py-2 bg-green-500 text-white rounded-md hover:bg-green-600 transition-colors focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2 flex items-center gap-1"
               title="Save current scenario"
             >
               <Save size={16} />
-              <span className="hidden sm:inline">Save</span>
+              <span className="hidden md:inline">Save</span>
             </button>
 
             <button
               onClick={handleLoad}
-              className="px-3 py-2 bg-purple-500 text-white rounded-md hover:bg-purple-600 transition-colors focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2 flex items-center gap-1"
+              className="p-2 sm:px-3 sm:py-2 bg-purple-500 text-white rounded-md hover:bg-purple-600 transition-colors focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2 flex items-center gap-1"
               title="Load saved scenario"
             >
               <FolderOpen size={16} />
-              <span className="hidden sm:inline">Load</span>
+              <span className="hidden md:inline">Load</span>
             </button>
 
             <button
               onClick={handleShare}
-              className="px-3 py-2 bg-orange-500 text-white rounded-md hover:bg-orange-600 transition-colors focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-offset-2 flex items-center gap-1"
+              className="p-2 sm:px-3 sm:py-2 bg-orange-500 text-white rounded-md hover:bg-orange-600 transition-colors focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-offset-2 flex items-center gap-1"
               title="Share faders as PNG image"
             >
               <Share2 size={16} />
-              <span className="hidden sm:inline">Share</span>
+              <span className="hidden md:inline">Share</span>
             </button>
 
             <button
               onClick={handleReset}
-              className="px-3 py-2 bg-red-500 text-white rounded-md hover:bg-red-600 transition-colors focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2 flex items-center gap-1"
+              className="p-2 sm:px-3 sm:py-2 bg-red-500 text-white rounded-md hover:bg-red-600 transition-colors focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2 flex items-center gap-1"
               title="Reset all faders"
             >
               <RotateCcw size={16} />
-              <span className="hidden sm:inline">Reset</span>
+              <span className="hidden md:inline">Reset</span>
             </button>
           </div>
         </div>
