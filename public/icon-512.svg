@@ -1,15 +1,25 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="192" height="192" viewBox="0 0 512 512">
+<svg xmlns="http://www.w3.org/2000/svg" width="512" height="512" viewBox="0 0 512 512">
+  <!-- Background -->
   <rect x="0" y="0" width="512" height="512" rx="96" fill="#0b0b0b"/>
+
+  <!-- Tracks (centered group: x = 80, 176, 272, 368) -->
   <rect x="80"  y="96" width="64" height="320" rx="32" fill="#ffffff10"/>
   <rect x="176" y="96" width="64" height="320" rx="32" fill="#ffffff10"/>
   <rect x="272" y="96" width="64" height="320" rx="32" fill="#ffffff10"/>
   <rect x="368" y="96" width="64" height="320" rx="32" fill="#ffffff10"/>
 
+  <!-- Fader fills (tapered: top 64, bottom 28) -->
+  <!-- Heights: 85% (topY=144), 60% (224), 40% (288), 20% (352) -->
+  <!-- 1) Blue @ 85% -->
   <path d="M80,144 L144,144 L126,416 L98,416 Z" fill="#3B82F6"/>
+  <!-- 2) Red @ 60% -->
   <path d="M176,224 L240,224 L222,416 L194,416 Z" fill="#EF4444"/>
+  <!-- 3) Green @ 40% -->
   <path d="M272,288 L336,288 L318,416 L290,416 Z" fill="#10B981"/>
+  <!-- 4) Yellow @ 20% -->
   <path d="M368,352 L432,352 L414,416 L386,416 Z" fill="#F59E0B"/>
 
+  <!-- Fader thumbs (subtle handles just above top of each fill) -->
   <rect x="82"  y="132" width="60" height="24" rx="12" fill="#E5E7EB"/>
   <rect x="178" y="212" width="60" height="24" rx="12" fill="#E5E7EB"/>
   <rect x="274" y="276" width="60" height="24" rx="12" fill="#E5E7EB"/>
