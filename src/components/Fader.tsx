@@ -5,6 +5,69 @@ import * as Slider from "@radix-ui/react-slider"
 import { Lock } from "lucide-react"
 import { useSimpleStore } from "@/lib/simple-store"
 
+// Visual emphasis transformation options
+// Maps linear 0-100 values to an emphasized visual scale
+
+// Option 1: Square root (gentler than log, still emphasizes differences)
+function linearToSqrtVisual(linearValue: number): number {
+  if (linearValue <= 0) return 0
+  if (linearValue >= 100) return 100
+
+  // Square root curve - gentler emphasis
+  return Math.sqrt(linearValue / 100) * 100
+}
+
+function sqrtVisualToLinear(visualValue: number): number {
+  if (visualValue <= 0) return 0
+  if (visualValue >= 100) return 100
+
+  return Math.pow(visualValue / 100, 2) * 100
+}
+
+// Option 2: Power curve (adjustable aggression)
+function linearToPowerVisual(linearValue: number, power: number = 0.6): number {
+  if (linearValue <= 0) return 0
+  if (linearValue >= 100) return 100
+
+  // Power < 1 = emphasize high values
+  // Power = 0.5 = square root (gentle)
+  // Power = 0.6 = slightly more emphasis
+  // Power = 0.7 = moderate emphasis
+  return Math.pow(linearValue / 100, power) * 100
+}
+
+function powerVisualToLinear(visualValue: number, power: number = 0.6): number {
+  if (visualValue <= 0) return 0
+  if (visualValue >= 100) return 100
+
+  return Math.pow(visualValue / 100, 1 / power) * 100
+}
+
+// Option 3: Custom S-curve (smooth emphasis without extremes)
+function linearToSCurveVisual(linearValue: number): number {
+  if (linearValue <= 0) return 0
+  if (linearValue >= 100) return 100
+
+  const x = linearValue / 100
+  // Smooth S-curve using smoothstep function
+  const smooth = x * x * (3 - 2 * x)
+  return smooth * 100
+}
+
+function sCurveVisualToLinear(visualValue: number): number {
+  if (visualValue <= 0) return 0
+  if (visualValue >= 100) return 100
+
+  // Approximate inverse (good enough for this use case)
+  const y = visualValue / 100
+  // Simple approximation
+  return (y / (3 - 2 * y)) * 100
+}
+
+// Current active transformation (change these to try different curves)
+const linearToVisual = (v: number) => linearToPowerVisual(v, 0.7)
+const visualToLinear = (v: number) => powerVisualToLinear(v, 0.7)
+
 interface FaderProps {
   index: number
   label: string
@@ -17,9 +80,17 @@ interface FaderProps {
 export default function Fader({ index, label, color, value, locked, onEditLabel }: FaderProps) {
   const { setValue, startDrag, endDrag } = useSimpleStore()
 
+  // Calculate visual (power curve) value for the slider position
+  const visualValue = linearToVisual(value)
+
+  // Calculate track width based on value (3px at 0, 15px at 100)
+  const trackWidth = 3 + (value / 100) * 12 // 3 + 0-12 = 3-15px
+
   const handleValueChange = useCallback(
     (newValues: number[]) => {
-      setValue(index, newValues[0])
+      // Convert from visual position back to linear value
+      const linearValue = visualToLinear(newValues[0])
+      setValue(index, linearValue)
     },
     [index, setValue]
   )
@@ -86,18 +157,24 @@ export default function Fader({ index, label, color, value, locked, onEditLabel 
         <Slider.Root
           className="relative h-full w-full flex items-center justify-center"
           orientation="vertical"
-          value={[value]}
+          value={[visualValue]}
           onValueChange={handleValueChange}
           onPointerDown={handlePointerDown}
           onPointerUp={handlePointerUp}
           min={0}
           max={100}
-          step={1}
+          step={0.1}
           aria-label={`${label} fader`}
           disabled={locked}
         >
-          <Slider.Track className="relative bg-gray-200 dark:bg-gray-700 h-full w-2 rounded-full" style={{ touchAction: 'none' }}>
-            <Slider.Range className="absolute w-full rounded-full" style={{ backgroundColor: color }} />
+          <Slider.Track
+            className="relative bg-gray-200 dark:bg-gray-700 h-full rounded-full transition-all duration-150"
+            style={{
+              touchAction: 'none',
+              width: `${trackWidth}px`
+            }}
+          >
+            <Slider.Range className="absolute bg-blue-500 w-full rounded-full" style={{ backgroundColor: color }} />
           </Slider.Track>
           <Slider.Thumb
             className={`block w-6 h-6 sm:w-5 sm:h-5 bg-white dark:bg-gray-800 border-2 shadow-lg focus:outline-none focus:ring-2 focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-70 flex items-center justify-center ${
