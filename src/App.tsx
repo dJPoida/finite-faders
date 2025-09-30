@@ -38,7 +38,7 @@ export default function App() {
           </div>
 
           <ClientOnlyStore>
-            <FaderBank ref={faderBankRef} className="bg-white dark:bg-gray-800 rounded-lg shadow-lg border border-gray-200 dark:border-gray-700 flex-1 min-h-0" />
+            <FaderBank ref={faderBankRef} className="flex-1 min-h-0" />
           </ClientOnlyStore>
         </div>
       </main>
