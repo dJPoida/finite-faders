@@ -98,7 +98,7 @@ export default function Fader({ index, label, value, locked, onToggleLock }: Fad
         >
           <Lock size={16} />
         </button>
-        <div className="bg-gray-800 dark:bg-gray-200 text-white dark:text-gray-800 px-2 py-1 rounded text-xs font-mono min-w-[2rem] text-center">
+        <div className="bg-gray-800 dark:bg-gray-200 text-white dark:text-gray-800 px-3 py-2 rounded text-lg font-bold font-mono min-w-[3rem] text-center">
           {value}
         </div>
       </div>

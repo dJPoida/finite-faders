@@ -5,12 +5,14 @@ interface SimpleAppState {
   values: number[] // Integer values that always sum to 100
   locks: boolean[] // Locked faders won't auto-adjust
   unit: string
+  editMode: boolean // Controls whether add/remove entity buttons are visible
   _hasHydrated: boolean
   setValue: (index: number, newValue: number) => void
   toggleLock: (index: number) => void
   addEntity: () => void
   removeEntity: (index: number) => void
   reset: () => void
+  setEditMode: (enabled: boolean) => void
   setHasHydrated: (state: boolean) => void
 }
 
@@ -18,6 +20,7 @@ const initialState = {
   values: [25, 25, 25, 25], // Start with equal distribution
   locks: [false, false, false, false],
   unit: "Time",
+  editMode: false,
   _hasHydrated: false,
 }
 
@@ -170,6 +173,7 @@ export const useSimpleStore = create<SimpleAppState>()(
         }
       }),
       reset: () => set({ ...initialState, _hasHydrated: true }),
+      setEditMode: (enabled) => set({ editMode: enabled }),
       setHasHydrated: (state) => set({ _hasHydrated: state }),
     }),
     {

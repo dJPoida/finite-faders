@@ -9,7 +9,7 @@ interface FaderBankProps {
 }
 
 const FaderBank = forwardRef<HTMLDivElement, FaderBankProps>(({ className = "" }, ref) => {
-  const { values, locks, toggleLock, addEntity, removeEntity } = useSimpleStore()
+  const { values, locks, editMode, toggleLock, addEntity, removeEntity } = useSimpleStore()
 
   const faderLabels = values.map((_, i) => `Entity ${i + 1}`)
 
@@ -25,10 +25,10 @@ const FaderBank = forwardRef<HTMLDivElement, FaderBankProps>(({ className = "" }
               locked={locks[index]}
               onToggleLock={() => toggleLock(index)}
             />
-            {values.length > 1 && (
+            {editMode && values.length > 1 && (
               <button
                 onClick={() => removeEntity(index)}
-                className="absolute -top-1 -right-1 w-4 h-4 bg-gray-400 hover:bg-red-500 text-white rounded-full text-xs leading-none opacity-0 group-hover:opacity-100 transition-opacity duration-200 flex items-center justify-center z-10"
+                className="absolute -top-1 -right-1 w-4 h-4 bg-gray-400 hover:bg-red-500 text-white rounded-full text-xs leading-none group-hover:opacity-100 transition-opacity duration-200 flex items-center justify-center z-10"
                 title="Remove entity"
                 aria-label={`Remove ${faderLabels[index]}`}
               >
@@ -38,7 +38,7 @@ const FaderBank = forwardRef<HTMLDivElement, FaderBankProps>(({ className = "" }
           </div>
         ))}
 
-        {values.length < 8 && (
+        {editMode && values.length < 8 && (
           <button
             onClick={() => addEntity()}
             className="flex-shrink-0 h-full w-12 sm:w-16 md:w-20 border-2 border-dashed border-gray-300 dark:border-gray-600 rounded-lg flex flex-col items-center justify-center gap-1 sm:gap-2 text-gray-500 dark:text-gray-400 hover:border-gray-400 dark:hover:border-gray-500 hover:text-gray-600 dark:hover:text-gray-300 transition-colors"
