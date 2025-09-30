@@ -4,11 +4,15 @@ import { persist } from "zustand/middleware"
 interface SimpleAppState {
   values: number[] // Integer values that always sum to 100
   locks: boolean[] // Locked faders won't auto-adjust
+  labels: string[] // Custom labels for each entity
+  colors: string[] // Custom colors for each entity
   unit: string
   editMode: boolean // Controls whether add/remove entity buttons are visible
   _hasHydrated: boolean
   setValue: (index: number, newValue: number) => void
   toggleLock: (index: number) => void
+  updateLabel: (index: number, label: string) => void
+  updateColor: (index: number, color: string) => void
   addEntity: () => void
   removeEntity: (index: number) => void
   reset: () => void
@@ -16,9 +20,13 @@ interface SimpleAppState {
   setHasHydrated: (state: boolean) => void
 }
 
+const defaultColors = ["#3B82F6", "#EF4444", "#10B981", "#F59E0B", "#8B5CF6", "#F97316", "#06B6D4", "#84CC16"]
+
 const initialState = {
   values: [25, 25, 25, 25], // Start with equal distribution
   locks: [false, false, false, false],
+  labels: ["Entity 1", "Entity 2", "Entity 3", "Entity 4"],
+  colors: [defaultColors[0], defaultColors[1], defaultColors[2], defaultColors[3]],
   unit: "Time",
   editMode: false,
   _hasHydrated: false,
@@ -154,22 +162,36 @@ export const useSimpleStore = create<SimpleAppState>()(
       toggleLock: (index) => set((state) => ({
         locks: state.locks.map((locked, i) => i === index ? !locked : locked)
       })),
+      updateLabel: (index, label) => set((state) => ({
+        labels: state.labels.map((l, i) => i === index ? label : l)
+      })),
+      updateColor: (index, color) => set((state) => ({
+        colors: state.colors.map((c, i) => i === index ? color : c)
+      })),
       addEntity: () => set((state) => {
         if (state.values.length >= 8) return state
         const newCount = state.values.length + 1
         const newLocks = [...state.locks, false]
+        const newLabel = `Entity ${newCount}`
+        const newColor = defaultColors[newCount % defaultColors.length]
         return {
           values: redistributeEqually(newCount, newLocks),
-          locks: newLocks
+          locks: newLocks,
+          labels: [...state.labels, newLabel],
+          colors: [...state.colors, newColor]
         }
       }),
       removeEntity: (index) => set((state) => {
         if (state.values.length <= 1) return state
         const newValues = state.values.filter((_, i) => i !== index)
         const newLocks = state.locks.filter((_, i) => i !== index)
+        const newLabels = state.labels.filter((_, i) => i !== index)
+        const newColors = state.colors.filter((_, i) => i !== index)
         return {
           values: redistributeEqually(newValues.length, newLocks),
-          locks: newLocks
+          locks: newLocks,
+          labels: newLabels,
+          colors: newColors
         }
       }),
       reset: () => set({ ...initialState, _hasHydrated: true }),

@@ -8,12 +8,14 @@ import { useSimpleStore } from "@/lib/simple-store"
 interface FaderProps {
   index: number
   label: string
+  color: string
   value: number
   locked: boolean
   onToggleLock: () => void
+  onEditLabel?: () => void
 }
 
-export default function Fader({ index, label, value, locked, onToggleLock }: FaderProps) {
+export default function Fader({ index, label, color, value, locked, onToggleLock, onEditLabel }: FaderProps) {
   const { setValue } = useSimpleStore()
 
   const handleValueChange = useCallback(
@@ -56,10 +58,14 @@ export default function Fader({ index, label, value, locked, onToggleLock }: Fad
   )
 
   return (
-    <div className="flex flex-col items-center gap-1 sm:gap-2 p-2 sm:p-3 bg-white dark:bg-gray-900 rounded-lg border border-gray-200 dark:border-gray-700 min-w-[60px] sm:min-w-[80px] h-full">
-      <span className="text-xs font-medium text-gray-700 dark:text-gray-300 text-center w-full truncate flex-shrink-0">
+    <div className="flex flex-col items-center gap-1 sm:gap-2 p-2 sm:p-3 bg-white dark:bg-gray-900 rounded-lg border-2 min-w-[60px] sm:min-w-[80px] h-full" style={{ borderColor: color }}>
+      <button
+        onClick={onEditLabel}
+        className="text-xs font-medium text-gray-700 dark:text-gray-300 text-center w-full truncate flex-shrink-0 hover:opacity-70 transition-opacity cursor-pointer"
+        title="Click to edit label"
+      >
         {label}
-      </span>
+      </button>
 
       <div className="relative flex-1 w-4 sm:w-6 flex justify-center min-h-0" style={{ touchAction: 'none' }}>
         <Slider.Root
@@ -74,13 +80,13 @@ export default function Fader({ index, label, value, locked, onToggleLock }: Fad
           disabled={locked}
         >
           <Slider.Track className="relative bg-gray-200 dark:bg-gray-700 h-full w-2 rounded-full" style={{ touchAction: 'none' }}>
-            <Slider.Range className="absolute bg-blue-500 w-full rounded-full" />
+            <Slider.Range className="absolute w-full rounded-full" style={{ backgroundColor: color }} />
           </Slider.Track>
           <Slider.Thumb
-            className="block w-6 h-6 sm:w-5 sm:h-5 bg-white dark:bg-gray-800 border-2 border-blue-500 rounded-full shadow-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 cursor-grab active:cursor-grabbing disabled:cursor-not-allowed disabled:opacity-50"
+            className="block w-6 h-6 sm:w-5 sm:h-5 bg-white dark:bg-gray-800 border-2 rounded-full shadow-lg focus:outline-none focus:ring-2 focus:ring-offset-2 cursor-grab active:cursor-grabbing disabled:cursor-not-allowed disabled:opacity-50"
             onKeyDown={handleKeyDown}
             aria-label={`${label} value: ${value}`}
-            style={{ touchAction: 'none' }}
+            style={{ touchAction: 'none', borderColor: color, boxShadow: `0 0 0 2px ${color}` }}
           />
         </Slider.Root>
       </div>
