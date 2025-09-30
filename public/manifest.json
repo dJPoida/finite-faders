@@ -1,14 +1,18 @@
 {
   "name": "Finite Faders",
   "short_name": "Faders",
-  "description": "Priorities that add up. Always.",
+  "description": "Allocate finite capacity across priorities using a mixing desk interface",
   "start_url": "/",
   "display": "standalone",
-  "background_color": "#0b0b0b",
-  "theme_color": "#0b0b0b",
+  "background_color": "#f9fafb",
+  "theme_color": "#3b82f6",
   "orientation": "portrait",
   "icons": [
-    { "src": "/icons/icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any maskable" },
-    { "src": "/icons/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any maskable" }
+    {
+      "src": "/icons/icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
   ]
 }

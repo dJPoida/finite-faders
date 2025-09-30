@@ -1,6 +1,6 @@
 # Finite Faders
 
-A Next.js PWA (Progressive Web App) for allocating finite capacity across priorities using a mixing desk interface. Perfect for resource allocation, time management, budget distribution, or any scenario where you need to balance competing priorities within fixed constraints.
+A Vite + React PWA (Progressive Web App) for allocating finite capacity across priorities using a mixing desk interface. Perfect for resource allocation, time management, budget distribution, or any scenario where you need to balance competing priorities within fixed constraints.
 
 ## Purpose & Objectives
 
