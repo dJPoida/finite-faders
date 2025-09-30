@@ -1,5 +1,3 @@
-"use client"
-
 import { useRef } from "react"
 import Header from "@/components/Header"
 import FaderBank from "@/components/FaderBank"
@@ -8,7 +6,7 @@ import ExportImageButton from "@/components/ExportImageButton"
 import Onboarding from "@/components/Modals/Onboarding"
 import ClientOnlyStore from "@/components/ClientOnlyStore"
 
-export default function Home() {
+export default function App() {
   const faderBankRef = useRef<HTMLDivElement>(null)
 
   return (

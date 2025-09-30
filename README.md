@@ -70,12 +70,12 @@ npm start
 ## Technical Architecture
 
 ### Tech Stack
-- **Framework**: Next.js 14 with App Router
+- **Framework**: Vite + React 19
 - **Language**: TypeScript
 - **Styling**: Tailwind CSS
 - **UI Components**: Radix UI (accessible, unstyled primitives)
 - **State Management**: Zustand with localStorage persistence
-- **PWA**: next-pwa for offline functionality
+- **PWA**: vite-plugin-pwa for offline functionality
 - **Export**: html2canvas for PNG generation
 
 ### Key Files
@@ -85,6 +85,8 @@ npm start
 - `src/lib/redistribution.ts` - Mathematical redistribution algorithms
 - `src/components/Fader.tsx` - Individual slider component
 - `src/components/FaderBank.tsx` - Main mixing desk layout
+- `src/App.tsx` - Main application component
+- `src/main.tsx` - Application entry point
 
 #### Mathematical Algorithms
 - **Proportional Redistribution**: Maintains relative ratios when adjusting unlocked faders
@@ -117,9 +119,10 @@ function setValue(index: number, newValue: number): void
 
 ### PWA Configuration
 - Installable on mobile devices
-- Offline functionality with service worker
+- Offline functionality with Workbox service worker
 - Responsive design for desktop and mobile
 - Web Share API integration for result sharing
+- Auto-updating service worker for seamless updates
 
 ### Accessibility
 - Full keyboard navigation support
@@ -134,6 +137,7 @@ function setValue(index: number, newValue: number): void
 - Tailwind CSS for styling (no custom CSS files)
 - Radix UI for accessible components
 - Zustand for state management (avoid React Context for performance)
+- Vite for fast development and optimized builds
 
 ### Testing Approach
 - Manual testing with Playwright for user interactions
@@ -148,12 +152,16 @@ function setValue(index: number, newValue: number): void
 
 ## Deployment
 
-The app is designed for deployment on Vercel with PWA capabilities:
+The app is designed for deployment on any static hosting platform with PWA capabilities:
 
 ```bash
-# Build and deploy
+# Build for production
 npm run build
-# Deploy to Vercel or similar platform
+
+# Preview production build locally
+npm run preview
+
+# Deploy dist/ folder to any static hosting (Vercel, Netlify, GitHub Pages, etc.)
 ```
 
 ## Future Enhancements
